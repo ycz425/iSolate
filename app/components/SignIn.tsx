@@ -6,7 +6,7 @@ export default function SignIn() {
         <form
         action={async () => {
             "use server"
-            await signIn("google")
+            await signIn("google", { redirectTo: "/dashboard" })
         }}
         >
             <button type="submit" className={"h-fit w-fit rounded-xl text-2xl bg-transparent text-black border border-black flex flex-row px-6 py-5 gap-5 items-center"}>
