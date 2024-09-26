@@ -1,5 +1,3 @@
-import SignIn from "@/app/components/SignIn"
-
 export default function Home() {
   return (
     <div className="w-screen h-screen">
@@ -12,7 +10,7 @@ export default function Home() {
             <p className="text-base">iSolate immerses you in a distraction-free environment, so you can focus solely on the tasks that are important to you.</p>
           </div>
           <div className="flex flex-col gap-5">
-            <SignIn/>
+            
           </div>
       </div>
     </div>

@@ -1,14 +1,7 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
-
-export default async function Dashboard() {
-    const session = await auth()
-    if (!session) return redirect("/")
-
+export default function Dashboard() {
     return (
         <>
-            Signed in!
+            hi
         </>
     )
-
 }
