@@ -1,4 +1,3 @@
-import { signup } from "./actions"
 import AuthForm from "@/app/components/AuthForm"
 import Link from "next/link"
 

@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Isolate",
+  title: "iSolate",
   description: "A productivity tool that immerses you in a distraction-free environment, so you can focus on the tasks you need to complete.",
 };
 
