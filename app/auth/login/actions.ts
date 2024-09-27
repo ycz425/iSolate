@@ -5,7 +5,8 @@ import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
-export async function login(formData: FormData) {
+
+export async function login(prevState: any, formData: FormData) {
     const supabase = createClient()
 
     const schema = z.object({
@@ -13,13 +14,18 @@ export async function login(formData: FormData) {
         password: z.string()
     })
 
-    const data = schema.parse({
+    const result = schema.safeParse({
         email: formData.get("email"),
         password: formData.get("password")
     })
 
-    supabase.auth.signInWithPassword(data)
+    if (!result.success) return {message: result.error.issues[0].message}
+
+    const { error } = await supabase.auth.signInWithPassword(result.data)
+    if (error?.code == "validation_failed") return {message: "Missing email address."}
+    if (error) return {message: error.message}
 
     revalidatePath("/", "layout")
     redirect("/dashboard")
 }
+
