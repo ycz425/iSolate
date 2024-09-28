@@ -26,11 +26,6 @@ export default function RootLayout({
         <body
           className={inter.className}
         >
-          <div className="h-fit w-full fixed flex items-start justify-start p-5">
-            <Link href="/">
-              <h1 className="text-4xl">iSolate</h1>
-            </Link>
-          </div>
           {children}
         </body>
       </UserProvider>

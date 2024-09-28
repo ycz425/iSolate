@@ -5,10 +5,9 @@ export default withPageAuthRequired(async function Dashboard() {
     const { user } = await getSession()
     return (
         user && (
-            <div className="h-screen flex items-center justify-center border">
-                <p>Hello {user.name}!</p>
-                <a href="/api/auth/logout">Logout</a>
-            </div>
-        )
+            <p>
+                hi
+            </p>
+    )
     )
 }, { returnTo: "/dashboard" })
