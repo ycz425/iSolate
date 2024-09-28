@@ -6,26 +6,18 @@ import { useRouter } from "next/navigation"
 interface ButtonProps {
     content: string,
     color: "outline" | "colored",
-    onClick?: string | (() => void)
-    formAction?: ((formData: FormData) => void | Promise<void>)
+    href?: string
 }
 
-export default function Button({ content, color, onClick, formAction }: ButtonProps) {
+export default function Button({ content, color, href }: ButtonProps) {
     const router = useRouter()
 
-    const handleClick = () => {
-        if (typeof onClick == "string")
-            router.push(onClick)
-        else if (typeof onClick == "function")
-            onClick()
-    }
-
     return (
-        <button className={clsx("h-16 w-80 rounded-xl text-2xl", {
+        <a className={clsx("h-16 w-80 flex rounded-xl text-2xl items-center justify-center", {
             "bg-transparent text-black border border-black": color == "outline",
             "bg-black text-white": color == "colored"
-        })} onClick={handleClick} formAction={formAction}>
+        })} href={href}>
             {content}
-        </button>
+        </a>
     )
 }
