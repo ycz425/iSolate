@@ -3,10 +3,8 @@ import { createClient } from "@supabase/supabase-js"
 
 export async function getTabs() {
     const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
-    const session = await getSession()
-    const {data, error} = await supabase.from("tabs").select().eq("user_id", session!.user.user_id)
-
-    console.log(data)
+    const { user } = await getSession()
+    const {data, error} = await supabase.from("tabs").select("id, name").eq("user_id", user.sub)
 
     return {error: error, data: data}
 }
