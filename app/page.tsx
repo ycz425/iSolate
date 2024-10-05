@@ -1,6 +1,7 @@
 import Button from "@/app/components/Button"
 import Link from "next/link"
 import Image from "next/image"
+import Tester from "@/app/components/Test"
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
               <Button content="Log in" color="outline" href="/api/auth/login"/>
           </div>
       </div>
+      <Tester/>
     </>
   );
 }
