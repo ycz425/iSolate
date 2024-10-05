@@ -1,7 +1,7 @@
-import Button from "@/app/components/Button"
+import Button from "./components/Button"
 import Link from "next/link"
 import Image from "next/image"
-import Tester from "@/app/components/Test"
+import Tester from "./components/Test"
 
 export default function Home() {
   return (

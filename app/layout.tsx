@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
 import { Inter } from 'next/font/google';
-import Link from "next/link"
 import { UserProvider } from "@auth0/nextjs-auth0/client"
 
 export const metadata: Metadata = {
