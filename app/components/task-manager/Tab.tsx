@@ -8,7 +8,7 @@ interface TabProps {
 
 export default function Tab({ name, selected, onClick }: TabProps) {
     return (
-        <button className={clsx("h-10 w-40 flex shrink-0 justify-center items-end text-lg border-b", {"border-black": selected})} onClick={onClick}>
+        <button className={clsx("h-10 w-40 flex shrink-0 justify-center items-end text-lg border-b", {"border-black": selected, "border-neutral-300": !selected})} onClick={onClick}>
             {name}
         </button>
     )
