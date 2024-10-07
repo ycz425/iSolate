@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import Tab from "./Tab"
 import Task from "./Task"
 import { addTask } from "@/app/actions/taskActions"
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@/utils/supabase/client"
 
 interface TaskManagerProps {
     tabList: TabInterface[],
@@ -13,13 +13,15 @@ interface TaskManagerProps {
 }
 
 export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
+    const supabase = createClient()
+
     const [tabs, setTabs] = useState(tabList) // do we need to keep states?
     const [selectedTabId, setSelectedTabId] = useState<number | null>(null)
 
     const [tasks, setTasks] = useState(taskList)
 
     useEffect(() => {
-        const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+        
         
     }, [])
 
