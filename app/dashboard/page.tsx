@@ -13,12 +13,10 @@ export default withPageAuthRequired(async function Dashboard() {
     const tasks = await getTasks()
 
     return (
-        (
-            <>
-                <TaskManager tabList={tabs} taskList={tasks}/>
-                <Button content="logout" color="outline" href="/api/auth/logout" />
-                <Tester/>
-            </>
-    )
+        <>
+            <TaskManager tabList={tabs} taskList={tasks}/>
+            <Button content="logout" color="outline" href="/api/auth/logout" />
+            <Tester/>
+        </>
     )
 }, { returnTo: "/dashboard" })
