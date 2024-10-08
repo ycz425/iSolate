@@ -5,8 +5,8 @@ export interface Tab {
 
 export interface Task {
     id: number,
-    tab_id: number,
+    tab_id: number | null,
     name: string,
-    description?: string,
-    deadline?: Date
+    description: string | null,
+    deadline: Date | null
 }
