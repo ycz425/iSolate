@@ -43,8 +43,17 @@ export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
                 <div className=""></div>
                 <div className="flex flex-col gap-5 w-[550px] overflow-y-scroll">
                     {tasks
-                        .filter(task => selectedTabId == null || task.tab_id == selectedTabId)
-                        .map((task, index) => <Task key={index} id={task.id} name={task.name}/>)}
+                        .filter(task => selectedTabId == null || task.tabs?.id == selectedTabId)
+                        .map((task, index) => <Task
+                            key={index}
+                            id={task.id}
+                            name={task.name}
+                            tabs={!selectedTabId ? task.tabs : null}
+                            description={task.description}
+                            deadline={task.deadline}
+                            tags={task.tags}
+                        />)
+                    }
                 </div>
                 <button className="border-black rounded-lg font-extralight h-fit w-fit text-4xl" onClick={() => {addTask("testAdd")}}>＋</button>
             </div>
