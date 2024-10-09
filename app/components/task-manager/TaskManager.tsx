@@ -6,7 +6,6 @@ import Tab from "./Tab"
 import Task from "./Task"
 import { addTask, getTasks } from "@/app/actions/taskActions"
 import { createClient } from "@/utils/supabase/client"
-import { RealtimePostgresChangesPayload } from "@supabase/supabase-js"
 
 interface TaskManagerProps {
     tabList: TabInterface[],
@@ -16,7 +15,7 @@ interface TaskManagerProps {
 export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
     const supabase = createClient()
 
-    const [tabs, setTabs] = useState(tabList) // do we need to keep states?
+    const [tabs, setTabs] = useState(tabList)
     const [selectedTabId, setSelectedTabId] = useState<number | null>(null)
 
     const [tasks, setTasks] = useState(taskList)

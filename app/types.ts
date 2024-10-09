@@ -1,3 +1,5 @@
+export type Color = "red" | "blue"
+
 export interface Tab {
     id: number,
     name: string
@@ -6,7 +8,7 @@ export interface Tab {
 export interface Tag {
     id: number,
     name: string,
-    color: string
+    color: Color
 }
 
 export interface Task {

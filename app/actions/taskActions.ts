@@ -2,8 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server"
 import { getSession } from "@auth0/nextjs-auth0"
-
-// TODO: server-side form validation <3 (look at nextjs docs for server action)
+import { Task } from "../types" 
 
 export async function getTasks(tabId?: number, tagIds?: number[]) {
     const supabase = createClient() // check if service role key is needed
@@ -17,7 +16,7 @@ export async function getTasks(tabId?: number, tagIds?: number[]) {
     if (error)
         throw new Error(`Supabase error: ${error.message}`)
 
-    return data
+    return data as unknown as Task[]
     
 }
 
@@ -34,6 +33,7 @@ export async function setComplete(taskId: number) {
         throw new Error(`Supabase error: ${error.message}`)
 }
 
+// TODO: server-side form validation <3 (look at nextjs docs for server action)
 export async function addTask(name: string, description?: string, tabId?: number, deadline?: Date) {
     const supabase = createClient()
     const session = await getSession()
