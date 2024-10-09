@@ -3,16 +3,18 @@ export interface Tab {
     name: string
 }
 
-export interface Task {
-    id: number,
-    tab_id: number | null,
-    name: string,
-    description: string | null,
-    deadline: string | null
-}
-
 export interface Tag {
     id: number,
     name: string,
     color: string
 }
+
+export interface Task {
+    id: number,
+    name: string,
+    tabs: Tab | null,
+    description: string | null,
+    deadline: string | null
+    tags: Tag[]
+}
+
