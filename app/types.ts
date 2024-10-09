@@ -8,5 +8,11 @@ export interface Task {
     tab_id: number | null,
     name: string,
     description: string | null,
-    deadline: Date | null
+    deadline: string | null
+}
+
+export interface Tag {
+    id: number,
+    name: string,
+    color: string
 }
