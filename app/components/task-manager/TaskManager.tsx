@@ -22,7 +22,7 @@ export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
 
     useEffect(() => {
         const channel = supabase.channel("realtime")
-            .on("postgres_changes", { event: "INSERT", schema: "public", table: "tasks" }, async () => {
+            .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, async () => {
                 setTasks(await getTasks())
             })
             .subscribe()
