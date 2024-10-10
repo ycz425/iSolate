@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server"
 import { getSession } from "@auth0/nextjs-auth0"
 import { Task } from "../types" 
 
-export async function getTasks(tabId?: number, tagIds?: number[]) {
+export async function getTasks() {
     const supabase = createClient() // check if service role key is needed
     const session = await getSession()
 
