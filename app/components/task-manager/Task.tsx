@@ -18,7 +18,7 @@ export default function Task({ id, name, tabs, description, deadline, tags }: Ta
                 </div>
             </div>
             <div className="flex flex-col h-full gap-1">
-                {tags.map(tag => <div className={"rounded-full w-3 h-3 " + (BackgroundColors[tag.color] || "border border-black")}></div>)}
+                {tags.map((tag, index)=> <div key={index} className={"rounded-full w-3 h-3 " + (BackgroundColors[tag.color] || "border border-black")}></div>)}
             </div>
         </div>
     )
