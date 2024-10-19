@@ -6,6 +6,7 @@ import Tab from "./Tab"
 import Task from "./Task"
 import { addTask, getTasks } from "@/app/actions/taskActions"
 import { createClient } from "@/utils/supabase/client"
+import TaskModal from "./TaskModal"
 
 interface TaskManagerProps {
     tabList: TabInterface[],
@@ -43,19 +44,19 @@ export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
                 <div className="flex flex-col gap-5 w-[550px] overflow-y-scroll">
                     {tasks
                         .filter(task => selectedTabId == null || task.tabs?.id == selectedTabId)
-                        .map((task, index) => <Task
-                            key={index}
-                            id={task.id}
-                            name={task.name}
-                            tabs={!selectedTabId ? task.tabs : null}
-                            description={task.description}
-                            deadline={task.deadline}
-                            tags={task.tags}
-                        />)
+                        .map((task, index) => <Task key={index} task={task}/>)
                     }
                 </div>
                 <button className="border-black rounded-lg font-extralight h-fit w-fit text-4xl" onClick={() => {addTask("testAdd")}}>＋</button>
             </div>
+            <TaskModal task={{
+                id: 69,
+                name: "modal test",
+                tabs: tabs[0],
+                description: null,
+                deadline: null,
+                tags: []
+            }} tabList={tabList}/>
         </div>
     )
 }
