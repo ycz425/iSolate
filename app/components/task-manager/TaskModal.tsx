@@ -1,19 +1,27 @@
 import { createPortal } from "react-dom";
-import { Task, Tab } from "@/app/types";
-import { useState } from 'react'
+import { Task, Tab, Tag as TagInterface } from "@/app/types";
+import { useState, useEffect, useRef } from 'react'
 import Button from "../Button"
 import Dropdown from "../Dropdown"
+import Tag from "./Tag";
+import TagMenu from "./TagMenu";
+import Image from "next/image";
 
 interface TaskModalProps {
     task: Task | null
     tabList: Tab[]
+    tagList: TagInterface[]
 }
 
-export default function TaskModal({ task, tabList }: TaskModalProps) {
+export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
     const [tabSelection, setTabSelection] = useState(task?.tabs?.id)
     const [name, setName] = useState(task?.name)
     const [description, setDescription] = useState(task?.description)
+    const [tags, setTags] = useState(task?.tags || [])
+    const [showTagMenu, setShowTagMenu] = useState(false)
 
+    const tagMenuRef = useRef<HTMLDivElement>(null)
+    const openTagMenuRef = useRef<HTMLImageElement>(null)
 
     const onChange = (value: number) => {
         setTabSelection(value)
@@ -35,6 +43,31 @@ export default function TaskModal({ task, tabList }: TaskModalProps) {
             target.blur()
         }   
     }
+
+    const onTagClick = (tagId: number) => {
+        if (tags?.some(tag => tag.id == tagId))
+            setTags(tags.filter(tag => tag.id != tagId))
+        else
+            setTags([...tags, tagList.find(tag => tag.id == tagId) as TagInterface])
+    }
+
+    useEffect(() => {
+        const handleMouseDown = (event: MouseEvent) => {
+            const target = event.target as HTMLElement
+            if (showTagMenu && !tagMenuRef.current?.contains(target) && target != openTagMenuRef.current)
+                setShowTagMenu(false)
+        }
+
+        if (showTagMenu)
+            document.addEventListener("mousedown", handleMouseDown)
+        else
+            document.removeEventListener("mousedown", handleMouseDown)
+    
+        return () => {
+            document.removeEventListener('mousedown', handleMouseDown);
+        }
+
+    }, [showTagMenu])
 
     return task && createPortal((
         <div className="absolute inset-0 bg-neutral-500 bg-opacity-50 flex justify-center items-center">
@@ -63,7 +96,35 @@ export default function TaskModal({ task, tabList }: TaskModalProps) {
                     </div>
                     <div className="flex flex-col justify-between">
                         <label id="deadline" className="text-xs text-neutral-500">Deadline</label>
-                        <input type="datetime-local" aria-labelledby="deadline" className="outline-none border-b border-neutral-300 focus:border-black"/>
+                        <input type="datetime-local" aria-labelledby="deadline" onKeyDown={onKeyDown} className="outline-none border-b border-neutral-300 focus:border-black"/>
+                    </div>
+                </div>
+                <div className="flex flex-col justify-between">
+                    <label id="tags" className="text-xs text-neutral-500">Tags</label>
+                    <div className="flex gap-3 pl-2">
+                        <Image
+                            ref={openTagMenuRef}
+                            src="/images/edit.svg"
+                            alt="edit tags"
+                            width={20}
+                            height={20}
+                            className="hover:cursor-pointer"
+                            onClick={() => setShowTagMenu(!showTagMenu)}
+                        />
+                        <div className="h-8 w-fit items-center flex gap-2 overflow-y-hidden overflow-x-scroll">
+                            {
+                                tagList
+                                    .filter(tag => tags.some(taskTag => tag.id == taskTag.id))
+                                    .map((tag, index) => <Tag key={index} tag={tag} colored={false}/>)
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        {showTagMenu &&
+                            <div className="absolute">
+                                <TagMenu ref={tagMenuRef} taskTags={tags} tagList={tagList} onTagClick={onTagClick}/>
+                            </div>
+                        }
                     </div>
                 </div>
                 <div>
@@ -71,6 +132,7 @@ export default function TaskModal({ task, tabList }: TaskModalProps) {
                     <div
                         className="w-full h-48 text-sm text-neutral-500 border border-neutral-300 p-5 rounded-xl outline-none overflow-y-scroll focus:border-black"
                         contentEditable
+                        suppressContentEditableWarning
                         aria-labelledby="description"
                         onInput={onDescriptionInput}
                     >

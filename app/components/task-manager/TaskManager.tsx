@@ -1,6 +1,6 @@
 "use client"
 
-import { Tab as TabInterface, Task as TaskInterface } from "../../types"
+import { Tab as TabInterface, Task as TaskInterface, Tag as TagInterface } from "../../types"
 import { useState, useEffect } from "react"
 import Tab from "./Tab"
 import Task from "./Task"
@@ -11,9 +11,10 @@ import TaskModal from "./TaskModal"
 interface TaskManagerProps {
     tabList: TabInterface[],
     taskList: TaskInterface[]
+    tagList: TagInterface[]
 }
 
-export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
+export default function TaskManager({ tabList, taskList, tagList }: TaskManagerProps) {
     const supabase = createClient()
 
     const [tabs, setTabs] = useState(tabList)
@@ -55,8 +56,8 @@ export default function TaskManager({ tabList, taskList }: TaskManagerProps) {
                 tabs: tabs[0],
                 description: null,
                 deadline: null,
-                tags: []
-            }} tabList={tabList}/>
+                tags: [{id: 1, name: "tag1", color: "red"}]
+            }} tabList={tabList} tagList={tagList}/>
         </div>
     )
 }
