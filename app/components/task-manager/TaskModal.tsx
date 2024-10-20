@@ -71,7 +71,7 @@ export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
 
     return task && createPortal((
         <div className="absolute inset-0 bg-neutral-500 bg-opacity-50 flex justify-center items-center">
-            <div className="w-[600px] h-fit flex flex-col p-10 gap-5 bg-white rounded-2xl">
+            <div className="w-[600px] h-fit flex flex-col p-10 gap-4 bg-white rounded-2xl">
                 <div>
                     <label id="name" className="text-xs text-neutral-500">Task</label>
                     <div
@@ -111,7 +111,7 @@ export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
                             className="hover:cursor-pointer"
                             onClick={() => setShowTagMenu(!showTagMenu)}
                         />
-                        <div className="h-8 w-fit items-center flex gap-2 overflow-y-hidden overflow-x-scroll">
+                        <div className="h-8 w-fit items-center flex gap-2 overflow-x-scroll">
                             {
                                 tagList
                                     .filter(tag => tags.some(taskTag => tag.id == taskTag.id))
