@@ -17,7 +17,7 @@ export default withPageAuthRequired(async function Dashboard() {
     return (
             <>
                 <TaskManager tabList={tabs} taskList={tasks} tagList={tags}/>
-                <Button content="logout" color="outline" href="/api/auth/logout" />
+                <Button content="logout" style="outline" size="md" href="/api/auth/logout" />
                 <Tester/>
             </>
     )

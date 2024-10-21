@@ -16,7 +16,7 @@ export default function Home() {
             <p className="text-base">iSolate immerses you in a distraction-free environment, so you can focus solely on the tasks that are important to you.</p>
           </div>
           <div className="flex flex-col gap-5">
-              <Button content="Log in" color="outline" href="/api/auth/login"/>
+              <Button content="Log in" style="outline" href="/api/auth/login"/>
           </div>
       </div>
       <Tester/>
