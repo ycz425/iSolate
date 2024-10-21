@@ -7,27 +7,32 @@ import Tag from "./Tag";
 import TagMenu from "./TagMenu";
 import Image from "next/image";
 import { formatForInput } from "@/utils/formatDate";
+import { upsertTask, deleteTask } from "@/app/actions/taskActions";
 
 interface TaskModalProps {
-    task: Task | null
+    task: Task
     tabList: Tab[]
     tagList: TagInterface[]
     onClose: () => void
+    newTask: boolean
 }
 
-export default function TaskModal({ task, tabList, tagList, onClose }: TaskModalProps) {
-    const [tabSelection, setTabSelection] = useState(task?.tabs?.id)
-    const [name, setName] = useState(task?.name)
-    const [description, setDescription] = useState(task?.description)
-    const [tags, setTags] = useState(task?.tags || [])
-    const [deadline, setDeadline] = useState(task?.deadline ? formatForInput(task.deadline): null)
+export default function TaskModal({ task, tabList, tagList, onClose, newTask }: TaskModalProps) {
+    const [tabSelection, setTabSelection] = useState(task.tabs?.id || null)
+    const [name, setName] = useState(task.name)
+    const [description, setDescription] = useState(task.description)
+    const [tags, setTags] = useState(task.tags || [])
+    const [deadline, setDeadline] = useState(task.deadline)
     const [showTagMenu, setShowTagMenu] = useState(false)
 
     const tagMenuRef = useRef<HTMLDivElement>(null)
     const openTagMenuRef = useRef<HTMLImageElement>(null)
 
     const onTabChange = (value: number) => {
-        setTabSelection(value)
+        if (value == -1)
+            setTabSelection(null)
+        else
+            setTabSelection(value)
     }
 
     const onNameInput = (event: React.FormEvent<HTMLDivElement>) => {
@@ -54,6 +59,22 @@ export default function TaskModal({ task, tabList, tagList, onClose }: TaskModal
             setTags([...tags, tagList.find(tag => tag.id == tagId) as TagInterface])
     }
 
+    const onSave = async () => {
+        await upsertTask(task.id != -1 ? task.id : undefined, name, tabSelection, description, deadline, tags.map((tag) => tag.id))
+        onClose()
+    }
+
+    const onDelete = async () => {
+        await deleteTask(task.id)
+        onClose()
+    }
+
+    const onDeadlineChange = (event: React.FormEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement
+        setDeadline(new Date(target.value).toISOString())
+        console.log(deadline)
+    }
+
     useEffect(() => {
         const handleMouseDown = (event: MouseEvent) => {
             const target = event.target as HTMLElement
@@ -72,9 +93,9 @@ export default function TaskModal({ task, tabList, tagList, onClose }: TaskModal
 
     }, [showTagMenu])
 
-    return task && createPortal((
+    return createPortal((
         <div className="absolute inset-0 bg-neutral-500 bg-opacity-50 flex justify-center items-center">
-            <div className="w-[600px] h-fit flex flex-col p-5 gap-4 bg-white rounded-2xl">
+            <form className="w-[600px] h-fit flex flex-col p-5 gap-4 bg-white rounded-2xl">
                 <div>
                     <label id="name" className="text-xs text-neutral-500">Task</label>
                     <div
@@ -93,18 +114,19 @@ export default function TaskModal({ task, tabList, tagList, onClose }: TaskModal
                         <label id="category" className="text-xs text-neutral-500">Category</label>
                         <Dropdown
                             labelledBy="category"
-                            options={tabList.map((tab) => { return { name: tab.name, value: tab.id }})}
+                            options={[{name: "None", value: -1}].concat(tabList.map((tab) => { return { name: tab.name, value: tab.id } }))}
+                            defaultValue={task.tabs?.id}
                             onChange={onTabChange}
                         />
                     </div>
                     <div className="flex flex-col justify-between">
                         <label id="deadline" className="text-xs text-neutral-500">Deadline</label>
                         <input
-                            type="datetime-local"
+                            type="date"
                             aria-labelledby="deadline"
                             onKeyDown={onKeyDown}
-                            value={deadline || undefined}
-                            onChange={(event) => { setDeadline(event.target.value) }}
+                            defaultValue={formatForInput(task.deadline)}
+                            onChange={onDeadlineChange}
                             className="outline-none border-b border-neutral-300 focus:border-black"
                         />
                     </div>
@@ -121,7 +143,7 @@ export default function TaskModal({ task, tabList, tagList, onClose }: TaskModal
                             className="hover:cursor-pointer"
                             onClick={() => setShowTagMenu(!showTagMenu)}
                         />
-                        <div className="h-8 w-fit items-center flex gap-2 overflow-x-scroll">
+                        <div className="h-8 w-fit items-center flex gap-2 overflow-x-scroll no-scrollbar">
                             {
                                 tagList
                                     .filter(tag => tags.some(taskTag => tag.id == taskTag.id))
@@ -140,7 +162,7 @@ export default function TaskModal({ task, tabList, tagList, onClose }: TaskModal
                 <div>
                     <label id="description" className="text-xs text-neutral-500">Description</label>
                     <div
-                        className="w-full h-48 text-sm text-neutral-500 border border-neutral-300 p-5 rounded-xl outline-none overflow-y-scroll focus:border-black"
+                        className="w-full h-48 text-sm text-neutral-500 border border-neutral-300 p-3 rounded-xl outline-none overflow-y-scroll focus:border-black"
                         contentEditable
                         suppressContentEditableWarning
                         aria-labelledby="description"
@@ -151,10 +173,10 @@ export default function TaskModal({ task, tabList, tagList, onClose }: TaskModal
                 </div>
                 <div className="flex justify-end gap-1">
                     <Button content="Cancel" style="outline" size="md" onClick={onClose}/>
-                    <Button content="Save" style="colored" size="md"/>
-                    <Button content="Delete" style="colored" color="red" size="md"/>
+                    <Button content={newTask ? "Create" : "Save"} style="colored" size="md" onClick={onSave}/>
+                    {!newTask && <Button content="Delete" style="colored" color="red" size="md" onClick={onDelete}/>}
                 </div>
-            </div>
+            </form>
         </div>
     ), document.body)
 }

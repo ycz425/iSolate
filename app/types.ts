@@ -16,7 +16,7 @@ export interface Task {
     name: string,
     tabs: Tab | null,
     description: string | null,
-    deadline: string | null
+    deadline: string
     tags: Tag[]
 }
 

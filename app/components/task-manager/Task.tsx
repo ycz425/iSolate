@@ -16,9 +16,9 @@ export default function Task({ task, onClick }: TaskProps) {
                 <p className="text-xl">{task.name}</p>
                 <div className="flex flex-row gap-8">
                     {task.tabs ? <p className="text-sm text-neutral-500">{task.tabs.name}</p> : null}
-                    {task.deadline ? <p className="text-sm text-neutral-500">
-                        {new Intl.DateTimeFormat("en-US", {dateStyle: "full"}).format(new Date(task.deadline))}
-                    </p> : null}
+                    <p className="text-sm text-neutral-500">
+                        {new Intl.DateTimeFormat("en-US", {dateStyle: "full", timeZone: "UTC"}).format(new Date(task.deadline))}
+                    </p>
                 </div>
             </div>
             <div className="flex flex-col h-full gap-1">

@@ -4,7 +4,7 @@ import { Tab as TabInterface, Task as TaskInterface, Tag as TagInterface } from 
 import { useState, useEffect } from "react"
 import Tab from "./Tab"
 import Task from "./Task"
-import { addTask, getTasks } from "@/app/actions/taskActions"
+import { getTasks } from "@/app/actions/taskActions"
 import { createClient } from "@/utils/supabase/client"
 import TaskModal from "./TaskModal"
 
@@ -23,6 +23,10 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
 
     const [modalTask, setModalTask] = useState<TaskInterface | null>(null)
 
+    const onAddTask = () => {
+        setModalTask({id: -1, name: "New Task", tabs: null, description: null, deadline: new Date().toISOString(), tags: []})
+    }
+
     useEffect(() => {
         const channel = supabase.channel("realtime")
             .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, async () => {
@@ -35,7 +39,6 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
         }
     }, [])
 
-    console.log(taskList[0].deadline)
     return (
         <div className="w-[800px] flex flex-col">
             <div className="w-full h-fit flex overflow-x-scroll no-scrollbar">
@@ -50,9 +53,17 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
                         .map((task, index) => <Task key={index} task={task} onClick={() => {setModalTask(task)}}/>)
                     }
                 </div>
-                <button className="border-black rounded-lg font-extralight h-fit w-fit text-4xl" onClick={() => {addTask("testAdd")}}>＋</button>
+                <button className="border-black rounded-lg font-extralight h-fit w-fit text-4xl" onClick={onAddTask}>＋</button>
             </div>
-            {modalTask && <TaskModal task={modalTask} tabList={tabList} tagList={tagList} onClose={() => {setModalTask(null)}}/>}
+            {modalTask && 
+                <TaskModal
+                    task={modalTask}
+                    tabList={tabList} 
+                    tagList={tagList}
+                    newTask={modalTask.id == -1}
+                    onClose={() => {setModalTask(null)}}
+                />
+            }
         </div>
     )
 }
