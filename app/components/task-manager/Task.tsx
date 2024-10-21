@@ -5,11 +5,12 @@ import { BackgroundColors } from "@/app/color"
 
 interface TaskProps {
     task: TaskInterface
+    onClick: () => void
 }
 
-export default function Task({ task }: TaskProps) {
+export default function Task({ task, onClick }: TaskProps) {
     return (
-        <div className="border border-black h-[80px] w-full flex rounded-2xl items-center p-3 gap-5">
+        <div className="border border-black h-[80px] w-full flex rounded-2xl items-center p-3 gap-5 hover:cursor-pointer" onClick={onClick}>
             <CheckBox onClick={() => {setComplete(task.id)}}/>
             <div className="flex flex-col w-4/5">
                 <p className="text-xl">{task.name}</p>

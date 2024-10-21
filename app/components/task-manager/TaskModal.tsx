@@ -6,24 +6,27 @@ import Dropdown from "../Dropdown"
 import Tag from "./Tag";
 import TagMenu from "./TagMenu";
 import Image from "next/image";
+import { formatForInput } from "@/utils/formatDate";
 
 interface TaskModalProps {
     task: Task | null
     tabList: Tab[]
     tagList: TagInterface[]
+    onClose: () => void
 }
 
-export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
+export default function TaskModal({ task, tabList, tagList, onClose }: TaskModalProps) {
     const [tabSelection, setTabSelection] = useState(task?.tabs?.id)
     const [name, setName] = useState(task?.name)
     const [description, setDescription] = useState(task?.description)
     const [tags, setTags] = useState(task?.tags || [])
+    const [deadline, setDeadline] = useState(task?.deadline ? formatForInput(task.deadline): null)
     const [showTagMenu, setShowTagMenu] = useState(false)
 
     const tagMenuRef = useRef<HTMLDivElement>(null)
     const openTagMenuRef = useRef<HTMLImageElement>(null)
 
-    const onChange = (value: number) => {
+    const onTabChange = (value: number) => {
         setTabSelection(value)
     }
 
@@ -41,7 +44,7 @@ export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
         if (event.key == "Enter") {
             const target = event.target as HTMLDivElement
             target.blur()
-        }   
+        }
     }
 
     const onTagClick = (tagId: number) => {
@@ -71,7 +74,7 @@ export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
 
     return task && createPortal((
         <div className="absolute inset-0 bg-neutral-500 bg-opacity-50 flex justify-center items-center">
-            <div className="w-[600px] h-fit flex flex-col p-10 gap-4 bg-white rounded-2xl">
+            <div className="w-[600px] h-fit flex flex-col p-5 gap-4 bg-white rounded-2xl">
                 <div>
                     <label id="name" className="text-xs text-neutral-500">Task</label>
                     <div
@@ -91,12 +94,19 @@ export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
                         <Dropdown
                             labelledBy="category"
                             options={tabList.map((tab) => { return { name: tab.name, value: tab.id }})}
-                            onChange={onChange}
+                            onChange={onTabChange}
                         />
                     </div>
                     <div className="flex flex-col justify-between">
                         <label id="deadline" className="text-xs text-neutral-500">Deadline</label>
-                        <input type="datetime-local" aria-labelledby="deadline" onKeyDown={onKeyDown} className="outline-none border-b border-neutral-300 focus:border-black"/>
+                        <input
+                            type="datetime-local"
+                            aria-labelledby="deadline"
+                            onKeyDown={onKeyDown}
+                            value={deadline || undefined}
+                            onChange={(event) => { setDeadline(event.target.value) }}
+                            className="outline-none border-b border-neutral-300 focus:border-black"
+                        />
                     </div>
                 </div>
                 <div className="flex flex-col justify-between">
@@ -138,6 +148,11 @@ export default function TaskModal({ task, tabList, tagList }: TaskModalProps) {
                     >
                         {task.description}
                     </div>
+                </div>
+                <div className="flex justify-end gap-1">
+                    <Button content="Cancel" style="outline" size="md" onClick={onClose}/>
+                    <Button content="Save" style="colored" size="md"/>
+                    <Button content="Delete" style="colored" color="red" size="md"/>
                 </div>
             </div>
         </div>

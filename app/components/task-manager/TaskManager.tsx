@@ -19,8 +19,9 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
 
     const [tabs, setTabs] = useState(tabList)
     const [selectedTabId, setSelectedTabId] = useState<number | null>(null)
-
     const [tasks, setTasks] = useState(taskList)
+
+    const [modalTask, setModalTask] = useState<TaskInterface | null>(null)
 
     useEffect(() => {
         const channel = supabase.channel("realtime")
@@ -34,6 +35,7 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
         }
     }, [])
 
+    console.log(taskList[0].deadline)
     return (
         <div className="w-[800px] flex flex-col">
             <div className="w-full h-fit flex overflow-x-scroll no-scrollbar">
@@ -45,19 +47,12 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
                 <div className="flex flex-col gap-5 w-[550px] overflow-y-scroll">
                     {tasks
                         .filter(task => selectedTabId == null || task.tabs?.id == selectedTabId)
-                        .map((task, index) => <Task key={index} task={task}/>)
+                        .map((task, index) => <Task key={index} task={task} onClick={() => {setModalTask(task)}}/>)
                     }
                 </div>
                 <button className="border-black rounded-lg font-extralight h-fit w-fit text-4xl" onClick={() => {addTask("testAdd")}}>＋</button>
             </div>
-            <TaskModal task={{
-                id: 69,
-                name: "modal test",
-                tabs: tabs[0],
-                description: null,
-                deadline: null,
-                tags: [{id: 1, name: "tag1", color: "red"}]
-            }} tabList={tabList} tagList={tagList}/>
+            {modalTask && <TaskModal task={modalTask} tabList={tabList} tagList={tagList} onClose={() => {setModalTask(null)}}/>}
         </div>
     )
 }
