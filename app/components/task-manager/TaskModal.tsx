@@ -40,7 +40,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
         if (value == -1)
             setValue("tab", null)
         else
-            setValue("tab", value)
+            setValue("tab", Number(value))
     }
 
     const onNameInput = (event: React.FormEvent<HTMLDivElement>) => {

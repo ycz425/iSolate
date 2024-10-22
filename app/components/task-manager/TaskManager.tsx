@@ -48,7 +48,10 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
             </div>
             <div className="flex justify-around h-96 pt-5">
                 <div className=""></div>
-                <div className="flex flex-col gap-5 w-[550px] overflow-y-scroll">
+                <div className="flex flex-col gap-5 w-[550px] items-center overflow-y-scroll">
+                    {tasks.filter(task => selectedTabId == null || task.tabs?.id == selectedTabId).length == 0 &&
+                        <h1 className="text-neutral-500">Click the ＋ button to start adding tasks.</h1>
+                    }
                     {tasks
                         .filter(task => selectedTabId == null || task.tabs?.id == selectedTabId)
                         .map((task, index) => <Task key={index} task={task} onClick={() => {setModalTask(task)}}/>)
