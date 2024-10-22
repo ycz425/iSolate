@@ -22,6 +22,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
     const [showTagMenu, setShowTagMenu] = useState(false)
     const tagMenuRef = useRef<HTMLDivElement>(null)
     const openTagMenuRef = useRef<HTMLImageElement>(null)
+    const [pending, setPending] = useState(false)
 
     const { setValue, handleSubmit, getValues, control, formState: { errors } } = useForm<TaskFormData>({
         defaultValues: {
@@ -68,13 +69,17 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
     }
 
     const onSave = async (data: TaskFormData) => {
+        setPending(true)
         await upsertTask(data)
         onClose()
+        setPending(false)
     }
 
     const onDelete = async () => {
+        setPending(true)
         await deleteTask(task.id)
         onClose()
+        setPending(false)
     }
 
     const onDeadlineChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -102,7 +107,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
 
     return createPortal((
         <div className="absolute inset-0 bg-neutral-500 bg-opacity-50 flex justify-center items-center">
-            <form onSubmit={handleSubmit(onSave)} noValidate className="w-[600px] h-fit flex flex-col p-5 gap-4 bg-white rounded-2xl">
+            <form onSubmit={handleSubmit(onSave)} noValidate className="w-[600px] h-[530px] flex flex-col p-5 gap-4 bg-white rounded-2xl">
                 <div>
                     <label id="name" className="text-xs text-neutral-500">Task</label>
                     <div
@@ -115,7 +120,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
                     >
                         {task.name} 
                     </div>
-                    {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
+                    <p className="text-xs text-red-600 h-3">{errors.name && errors.name.message}</p>
                 </div>
                 <div className="flex gap-10">
                     <div className="flex flex-col w-1/3 justify-start">
@@ -137,7 +142,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
                             onChange={onDeadlineChange}
                             className="outline-none border-b border-neutral-300 focus:border-black"
                         />
-                        {errors.deadline && <p className="text-xs text-red-600">{errors.deadline.message}</p>}
+                        <p className="text-xs text-red-600 h-3">{errors.deadline && errors.deadline.message}</p>
                     </div>
                 </div>
                 <div className="flex flex-col justify-between">
@@ -186,6 +191,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
                     {!newTask && <Button type="button" content="Delete" style="colored" color="red" size="md" onClick={onDelete}/>}
                 </div>
             </form>
+            {pending && <div className="bg-white opacity-50 rounded-2xl w-[600px] h-[525px] absolute"></div>}
         </div>
     ), document.body)
 }
