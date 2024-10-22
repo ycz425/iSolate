@@ -24,7 +24,8 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     const [modalTask, setModalTask] = useState<TaskInterface | null>(null)
 
     const onAddTask = () => {
-        setModalTask({id: -1, name: "New Task", tabs: null, description: null, deadline: new Date().toISOString(), tags: []})
+        const date = new Date()
+        setModalTask({id: -1, name: "New Task", tabs: null, description: "", deadline: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, tags: []})
     }
 
     useEffect(() => {
