@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import Button from "../Button"
 import Dropdown from "../Dropdown"
 import Tag from "./Tag";
-import TagMenu from "./TagMenu";
+import TagPopup from "./TagPopup";
 import Image from "next/image";
-import { upsertTask, deleteTask } from "@/app/actions/taskActions";
+import { upsertTask, deleteTask, getTasks } from "@/app/actions/taskActions";
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -15,10 +15,11 @@ interface TaskModalProps {
     tabList: Tab[]
     tagList: TagInterface[]
     onClose: () => void
+    sync: () => void
     newTask: boolean
 }
 
-export default function TaskModal({ task, tabList, tagList, onClose, newTask }: TaskModalProps) {
+export default function TaskModal({ task, tabList, tagList, onClose, newTask, sync }: TaskModalProps) {
     const [showTagMenu, setShowTagMenu] = useState(false)
     const tagMenuRef = useRef<HTMLDivElement>(null)
     const openTagMenuRef = useRef<HTMLImageElement>(null)
@@ -71,6 +72,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
     const onSave = async (data: TaskFormData) => {
         setPending(true)
         await upsertTask(data)
+        sync()
         onClose()
         setPending(false)
     }
@@ -78,6 +80,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
     const onDelete = async () => {
         setPending(true)
         await deleteTask(task.id)
+        sync()
         onClose()
         setPending(false)
     }
@@ -148,15 +151,15 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
                 <div className="flex flex-col justify-between">
                     <label id="tags" className="text-xs text-neutral-500">Tags</label>
                     <div className="flex gap-3 pl-2">
-                        <Image
-                            ref={openTagMenuRef}
-                            src="/images/edit.svg"
-                            alt="edit tags"
-                            width={20}
-                            height={20}
-                            className="hover:cursor-pointer"
-                            onClick={() => setShowTagMenu(!showTagMenu)}
-                        />
+                        <div className="w-8 h-8 flex justify-center items-center rounded-full hover:cursor-pointer hover:bg-neutral-100" onClick={() => setShowTagMenu(!showTagMenu)}>
+                            <Image
+                                ref={openTagMenuRef}
+                                src="/images/edit.svg"
+                                alt="edit tags"
+                                width={20}
+                                height={20}
+                            />
+                        </div>
                         <div className="h-8 w-fit items-center flex gap-2 overflow-x-scroll no-scrollbar">
                             {
                                 tagList
@@ -168,7 +171,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask }: 
                     <div>
                         {showTagMenu &&
                             <div className="absolute">
-                                <TagMenu ref={tagMenuRef} taskTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>
+                                <TagPopup ref={tagMenuRef} selectedTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>
                             </div>
                         }
                     </div>

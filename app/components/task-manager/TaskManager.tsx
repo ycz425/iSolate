@@ -1,11 +1,12 @@
 "use client"
 
 import { Tab as TabInterface, Task as TaskInterface, Tag as TagInterface } from "../../types"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Tab from "./Tab"
 import Task from "./Task"
 import { getTasks } from "@/app/actions/taskActions"
 import { createClient } from "@/utils/supabase/client"
+import TagMenu from "./TagMenu"
 import TaskModal from "./TaskModal"
 
 interface TaskManagerProps {
@@ -18,46 +19,48 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     const supabase = createClient()
 
     const [tabs, setTabs] = useState(tabList)
-    const [selectedTabId, setSelectedTabId] = useState<number | null>(null)
+    const [selectedTab, setSelectedTab] = useState<TabInterface | null>(null)
     const [tasks, setTasks] = useState(taskList)
+    const [selectedTags, setSelectedTags] = useState<number[]>([])
 
     const [modalTask, setModalTask] = useState<TaskInterface | null>(null)
 
     const onAddTask = () => {
         const date = new Date()
-        setModalTask({id: -1, name: "New Task", tabs: null, description: "", deadline: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, tags: []})
+        setModalTask({id: -1, name: "New Task", tabs: selectedTab, description: "", deadline: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, tags: []})
     }
 
-    useEffect(() => {
-        const channel = supabase.channel("realtime")
-            .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, async () => {
-                setTasks(await getTasks())
-            })
-            .subscribe()
+    const sync = async () => {
+        setTasks(await getTasks())
+    }
 
-        return () => {
-            supabase.removeChannel(channel)
-        }
-    }, [])
+    const onTagSelect = (tagId: number) => {
+        if (selectedTags.includes(tagId))
+            setSelectedTags(selectedTags.filter(selectedTag => selectedTag != tagId))
+        else
+            setSelectedTags(selectedTags.concat(tagId))
+    }
 
     return (
         <div className="w-[800px] flex flex-col">
             <div className="w-full h-fit flex overflow-x-scroll no-scrollbar">
-                <Tab name="Upcoming" selected={selectedTabId == null} onClick={()=>{setSelectedTabId(null)}}/>
-                {tabs.map((tab, index) => <Tab key={index} name={tab.name} selected={selectedTabId == tab.id} onClick={()=>{setSelectedTabId(tab.id)}}/>)}
+                <Tab name="Upcoming" selected={selectedTab == null} onClick={()=>{setSelectedTab(null)}}/>
+                {tabs.map((tab) => <Tab key={tab.id} name={tab.name} selected={selectedTab?.id == tab.id} onClick={()=>{setSelectedTab(tab)}}/>)}
             </div>
-            <div className="flex justify-around h-96 pt-5">
+            <div className="flex h-96 pt-5">
                 <div className=""></div>
-                <div className="flex flex-col gap-5 w-[550px] items-center overflow-y-scroll">
-                    {tasks.filter(task => selectedTabId == null || task.tabs?.id == selectedTabId).length == 0 &&
+                <div className="flex flex-col pt-2.5 px-5 gap-5 flex-grow items-center overflow-y-scroll">
+                    {tasks.filter(task => selectedTab == null || task.tabs?.id == selectedTab.id).length == 0 &&
                         <h1 className="text-neutral-500">Click the ＋ button to start adding tasks.</h1>
                     }
                     {tasks
-                        .filter(task => selectedTabId == null || task.tabs?.id == selectedTabId)
-                        .map((task, index) => <Task key={index} task={task} onClick={() => {setModalTask(task)}}/>)
+                        .filter(task => (selectedTab == null || task.tabs?.id == selectedTab.id) && (selectedTags.length == 0 || task.tags.some(tag => selectedTags.includes(tag.id))))
+                        .map((task) => <Task key={task.id} task={task} onClick={() => {setModalTask(task)}} sync={sync}/>)
                     }
                 </div>
-                <button className="border-black rounded-lg font-extralight h-fit w-fit text-4xl" onClick={onAddTask}>＋</button>
+                <div className="flex w-32 justify-center">
+                    <button className="font-extralight h-10 w-10 rounded-full hover:bg-neutral-100 text-4xl transition-all" onClick={onAddTask}>＋</button>
+                </div>
             </div>
             {modalTask && 
                 <TaskModal
@@ -65,7 +68,8 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
                     tabList={tabList} 
                     tagList={tagList}
                     newTask={modalTask.id == -1}
-                    onClose={() => {setModalTask(null)}}
+                    onClose={() => setModalTask(null)}
+                    sync={sync}
                 />
             }
         </div>
