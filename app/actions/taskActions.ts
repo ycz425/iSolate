@@ -11,7 +11,7 @@ export async function getTasks() {
     if (!session)
         throw new Error("User is not authenticated")
 
-    const {data, error} = await supabase.from("tasks").select("id, tabs(id, name), name, description, deadline, tags(id, name, color)").eq("user_id", session.user.sub).is("completed", null)
+    const {data, error} = await supabase.from("tasks").select("id, tabs(id, name), name, description, deadline, tags(id, name, color)").eq("user_id", session.user.sub).is("completed", null).order("deadline")
 
     if (error)
         throw new Error(`Supabase error: ${error.message}`)
