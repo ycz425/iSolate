@@ -10,10 +10,11 @@ import { deleteTag, upsertTag } from "@/app/actions/tagActions"
 interface TagPopupProps {
     tag: Tag
     onClose: () => void
+    removeSelection: (id: number) => void
     sync: () => void
 }
 
-export default forwardRef(({ tag, onClose, sync }: TagPopupProps, ref: ForwardedRef<HTMLFormElement>) => {
+export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProps, ref: ForwardedRef<HTMLFormElement>) => {
     const colors: Color[] = ["fuchsia", "pink", "rose", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple"]
     const [pending, setPending] = useState(false)
 
@@ -52,12 +53,13 @@ export default forwardRef(({ tag, onClose, sync }: TagPopupProps, ref: Forwarded
         setPending(true)
         await deleteTag(tagId)
         await sync()
+        removeSelection(tagId)
         onClose()
         setPending(false)
     }
 
     return (
-        <form ref={ref} onSubmit={handleSubmit(onSave)} className={`flex flex-col h-fit w-44 p-3 border bg-white rounded-xl shadow-md gap-3 absolute left-3/4 top-0 ${BorderColors[getValues().color]} ${BackgroundColorsLight[getValues().color]}`}>
+        <form ref={ref} onSubmit={handleSubmit(onSave)} className={`flex flex-col h-fit w-44 p-3 border rounded-xl shadow-md gap-3 absolute left-[90%] top-0 ${BorderColors[getValues().color]} ${BackgroundColorsLight[getValues().color]}`}>
             <div
                 className={`outline-none text-md border-b h-fit overflow-hidden text-nowrap ${TextColors[getValues().color]} ${BorderColors[getValues().color]}`}
                 contentEditable

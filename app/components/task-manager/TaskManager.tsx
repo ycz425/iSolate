@@ -10,6 +10,7 @@ import TagMenu from "./TagMenu"
 import TaskModal from "./TaskModal"
 import TagPopup from "./TagPopup"
 import { getTags } from "@/app/actions/tagActions"
+import clsx from "clsx"
 
 interface TaskManagerProps {
     tabList: TabInterface[],
@@ -28,8 +29,11 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     const [modalTask, setModalTask] = useState<TaskInterface | null>(null)
     const [popupTag, setPopupTag] = useState<TagInterface | null>(null)
 
+    const [showAddTask, setShowAddTask] = useState(false)
+    const [showAddTab, setShowAddTab] = useState(false)
+
     const tagPopupRef = useRef<HTMLFormElement>(null)
-    const openTagPopupRef = useRef<HTMLDivElement>(null)
+    const openTagPopupRef = useRef<HTMLButtonElement>(null)
 
     const onAddTask = () => {
         const date = new Date()
@@ -57,7 +61,7 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     useEffect(() => {
         const handleMouseDown = (event: MouseEvent) => {
             const target = event.target as HTMLElement
-            if (popupTag && !tagPopupRef.current?.contains(target) && openTagPopupRef.current != target)
+            if (popupTag && !tagPopupRef.current?.contains(target))
                 setPopupTag(null)
         }
 
@@ -82,32 +86,42 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
                 <Tab name="Upcoming" selected={selectedTab == null} onClick={()=>{setSelectedTab(null)}}/>
                 {tabs.map((tab) => <Tab key={tab.id} name={tab.name} selected={selectedTab?.id == tab.id} onClick={()=>{setSelectedTab(tab)}}/>)}
             </div>
-            <div className="flex h-96">
-                <div className="w-36 h-fit min-h-40 my-5 border-r border-neutral-300 flex flex-col items-end pr-5 py-3 gap-3 relative">
-                    <TagMenu selectedTags={selectedTags} tagList={tags} onTagClick={onTagSelect} onEditClick={(tag) => setPopupTag(tag)}/>
-                    <div
-                        className="flex justify-center items-center w-fit h-7 p-2 rounded-full text-xs hover:cursor-pointer relative transition-all bg-neutral-100 hover:bg-neutral-200"
-                        onClick={() => {setPopupTag({id: -1, name: "New Tag", color: "none"})}}
-                        ref={openTagPopupRef}
-                    >
-                        ＋ add tag
-                    </div>
-                    {popupTag &&
-                        <TagPopup
-                            ref={tagPopupRef}
-                            tag={popupTag}
-                            onClose={() => {setPopupTag(null)}}
-                            sync={syncTaskTags}
-                        />}
-                </div>
-                <div className="flex flex-col py-5 pl-10 pr-5 gap-5 flex-grow items-center overflow-y-scroll no-scrollbar">
+            <div className="flex flex-row-reverse h-96">
+                <div className="flex flex-col h-full w-full py-7 pl-10 pr-5 gap-5 items-center overflow-y-scroll no-scrollbar">
                     {filteredTasks.length == 0 &&
                         <h1 className="text-neutral-500">Click the "＋ Add" button to start adding tasks.</h1>
                     }
                     {filteredTasks.map((task) => <Task key={task.id} task={task} onClick={() => {setModalTask(task)}} sync={syncTasks}/>)}
                 </div>
-                <div className="flex flex-col w-32 items-start pt-3">
-                    <button className="flex justify-center items-center h-10 w-fit p-3 rounded-full text-md bg-neutral-100 hover:bg-black hover:text-white transition-all" onClick={onAddTask}>＋ Add Task</button>
+                <div className="w-44 h-full my-5 border-r border-neutral-300 flex flex-col items-end py-3 gap-4 relative">
+                    <div className="flex flex-col w-full items-start border-b border-neutral-300">
+                        <button
+                            className="p-3 w-full text-start text-neutral-500 border-t text-sm hover:bg-neutral-100 transition-all">
+                            ＋ Add new tab
+                        </button>
+                        <button 
+                            className="p-3 w-full text-start text-neutral-500 border-t text-sm hover:bg-neutral-100 transition-all"
+                            onClick={onAddTask}
+                        >
+                                ＋ Add new task
+                        </button>
+                        <button
+                            className="p-3 w-full text-start text-neutral-500 border-t text-sm hover:bg-neutral-100 transition-all"
+                            onClick={() => {setPopupTag({id: -1, name: "New Tag", color: "none"})}}
+                            ref={openTagPopupRef}
+                        >
+                            ＋ Add new tag
+                        </button>
+                    </div>
+                    <TagMenu selectedTags={selectedTags} tagList={tags} onTagClick={onTagSelect} onEditClick={(tag) => setPopupTag(tag)}/>
+                    {popupTag &&
+                        <TagPopup
+                            ref={tagPopupRef}
+                            tag={popupTag}
+                            onClose={() => {setPopupTag(null)}}
+                            removeSelection={(id) => {setSelectedTags(selectedTags.filter(tagId => tagId != id))}}
+                            sync={syncTaskTags}
+                        />}
                 </div>
             </div>
             {modalTask && 

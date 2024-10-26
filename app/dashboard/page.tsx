@@ -10,8 +10,6 @@ import Tester from "@/app/components/Test"
 
 export default withPageAuthRequired(async function Dashboard() {
 
-    console.log("rerendered")
-
     const tabs = await getTabs()
     const tasks = await getTasks()
     const tags = await getTags()

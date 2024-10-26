@@ -166,7 +166,7 @@ export default function TaskModal({ task, defaultTags, tabList, tagList, onClose
                                 />
                             </div>
                             {showTagMenu &&
-                                <div ref={tagMenuRef} className="border border-neutral-300 flex flex-col w-fit h-fit max-h-48 rounded-xl py-2 px-3 gap-2 shadow-md bg-white absolute top-full">
+                                <div ref={tagMenuRef} className="border border-neutral-300 flex flex-col w-28 h-fit max-h-48 rounded-xl py-2 px-3 gap-2 shadow-md bg-white absolute top-full">
                                     <TagMenu selectedTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>
                                 </div>
                             }

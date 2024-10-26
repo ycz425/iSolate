@@ -19,7 +19,7 @@ export default function TagMenu({ selectedTags, tagList, onTagClick, onEditClick
             {tagList.map((tag) => onEditClick ? 
                 <div
                     key={tag.id}
-                    className="flex justify-end gap-1 w-full"
+                    className="flex pr-5 justify-end gap-1 w-full"
                     onMouseEnter={() => {setHoveredTagId(tag.id)}}
                     onMouseLeave={() => {setHoveredTagId(null)}}
                 >
@@ -37,6 +37,7 @@ export default function TagMenu({ selectedTags, tagList, onTagClick, onEditClick
                 </div>
                 : <Tag key={tag.id} tag={tag} colored={selectedTags.some(selectedTag => selectedTag == tag.id)} onClick={() => {onTagClick(tag.id)}}/>
             )}
+            {tagList.length == 0 && <h1 className="text-neutral-500 text-center text-xs">No tags available</h1>}
         </div>
     )
 }
