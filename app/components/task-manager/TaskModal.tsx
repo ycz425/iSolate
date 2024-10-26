@@ -151,14 +151,17 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
                 <div className="flex flex-col justify-between">
                     <label id="tags" className="text-xs text-neutral-500">Tags</label>
                     <div className="flex gap-3 pl-2">
-                        <div className="w-8 h-8 flex justify-center items-center rounded-full hover:cursor-pointer hover:bg-neutral-100" onClick={() => setShowTagMenu(!showTagMenu)}>
-                            <Image
-                                ref={openTagMenuRef}
-                                src="/images/edit.svg"
-                                alt="edit tags"
-                                width={20}
-                                height={20}
-                            />
+                        <div className="relative">
+                            <div className="w-8 h-8 flex justify-center items-center rounded-full hover:cursor-pointer hover:bg-neutral-100" onClick={() => setShowTagMenu(!showTagMenu)}>
+                                <Image
+                                    ref={openTagMenuRef}
+                                    src="/images/edit.svg"
+                                    alt="edit tags"
+                                    width={20}
+                                    height={20}
+                                />
+                            </div>
+                            {showTagMenu && <TagPopup ref={tagMenuRef} selectedTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>}
                         </div>
                         <div className="h-8 w-fit items-center flex gap-2 overflow-x-scroll no-scrollbar">
                             {
@@ -167,13 +170,6 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
                                     .map((tag, index) => <Tag key={index} tag={tag} colored={false}/>)
                             }
                         </div>
-                    </div>
-                    <div>
-                        {showTagMenu &&
-                            <div className="absolute">
-                                <TagPopup ref={tagMenuRef} selectedTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>
-                            </div>
-                        }
                     </div>
                 </div>
                 <div>
