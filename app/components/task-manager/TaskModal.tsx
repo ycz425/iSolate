@@ -4,22 +4,23 @@ import { useState, useEffect, useRef } from 'react'
 import Button from "../Button"
 import Dropdown from "../Dropdown"
 import Tag from "./Tag";
-import TagPopup from "./TagPopup";
 import Image from "next/image";
-import { upsertTask, deleteTask, getTasks } from "@/app/actions/taskActions";
+import { upsertTask, deleteTask } from "@/app/actions/taskActions";
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
+import clsx from "clsx";
+import TagMenu from "./TagMenu";
 
 interface TaskModalProps {
     task: Task
+    defaultTags: number[]
     tabList: Tab[]
     tagList: TagInterface[]
     onClose: () => void
     sync: () => void
-    newTask: boolean
 }
 
-export default function TaskModal({ task, tabList, tagList, onClose, newTask, sync }: TaskModalProps) {
+export default function TaskModal({ task, defaultTags, tabList, tagList, onClose, sync }: TaskModalProps) {
     const [showTagMenu, setShowTagMenu] = useState(false)
     const tagMenuRef = useRef<HTMLDivElement>(null)
     const openTagMenuRef = useRef<HTMLImageElement>(null)
@@ -32,7 +33,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
             "tab": task.tabs?.id || null,
             "description": task.description,
             "deadline": task.deadline,
-            "tags": task.tags.map((tag) => tag.id)
+            "tags": task.id != -1 ? task.tags.map((tag) => tag.id) : defaultTags
         } as TaskFormData,
         resolver: zodResolver(TaskSchema)
     })
@@ -72,7 +73,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
     const onSave = async (data: TaskFormData) => {
         setPending(true)
         await upsertTask(data)
-        sync()
+        await sync()
         onClose()
         setPending(false)
     }
@@ -80,7 +81,7 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
     const onDelete = async () => {
         setPending(true)
         await deleteTask(task.id)
-        sync()
+        await sync()
         onClose()
         setPending(false)
     }
@@ -152,7 +153,10 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
                     <label id="tags" className="text-xs text-neutral-500">Tags</label>
                     <div className="flex gap-3 pl-2">
                         <div className="relative">
-                            <div className="w-8 h-8 flex justify-center items-center rounded-full hover:cursor-pointer hover:bg-neutral-100" onClick={() => setShowTagMenu(!showTagMenu)}>
+                            <div className={clsx(
+                                "w-8 h-8 flex justify-center items-center rounded-full hover:cursor-pointer transition-all",
+                                {"bg-neutral-200": showTagMenu, "hover:bg-neutral-100": !showTagMenu}
+                            )} onClick={() => setShowTagMenu(!showTagMenu)}>
                                 <Image
                                     ref={openTagMenuRef}
                                     src="/images/edit.svg"
@@ -161,7 +165,11 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
                                     height={20}
                                 />
                             </div>
-                            {showTagMenu && <TagPopup ref={tagMenuRef} selectedTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>}
+                            {showTagMenu &&
+                                <div ref={tagMenuRef} className="border border-neutral-300 flex flex-col w-fit h-fit max-h-48 rounded-xl py-2 px-3 gap-2 shadow-md bg-white absolute top-full">
+                                    <TagMenu selectedTags={getValues().tags} tagList={tagList} onTagClick={onTagClick}/>
+                                </div>
+                            }
                         </div>
                         <div className="h-8 w-fit items-center flex gap-2 overflow-x-scroll no-scrollbar">
                             {
@@ -186,8 +194,8 @@ export default function TaskModal({ task, tabList, tagList, onClose, newTask, sy
                 </div>
                 <div className="flex justify-end gap-1">
                     <Button type="button" content="Cancel" style="outline" size="md" onClick={onClose}/>
-                    <Button type="submit" content={newTask ? "Create" : "Save"} style="colored" size="md"/>
-                    {!newTask && <Button type="button" content="Delete" style="colored" color="red" size="md" onClick={onDelete}/>}
+                    <Button type="submit" content={task.id == -1 ? "Create" : "Save"} style="colored" size="md"/>
+                    {task.id != -1 && <Button type="button" content="Delete" style="colored" color="red" size="md" onClick={onDelete}/>}
                 </div>
             </form>
             {pending && <div className="bg-white opacity-50 rounded-2xl w-[600px] h-[525px] absolute"></div>}

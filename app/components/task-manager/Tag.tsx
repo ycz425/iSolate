@@ -11,14 +11,14 @@ interface TagProps {
 export default function Tag({ onClick, tag, colored }: TagProps) {
     return (
         <div onClick={onClick} className={clsx(
-            "w-20 h-7 text-xs text-ellipsis border rounded-md flex justify-center items-center shrink-0 transition-all " + BorderColors[tag.color],
+            "w-20 h-7 text-xs border rounded-md flex justify-center items-center shrink-0 transition-all " + BorderColors[tag.color],
             {
                 [TextColors[tag.color]]: !colored,
                 ["text-white " + BackgroundColors[tag.color]]: colored,
                 "hover:cursor-pointer": onClick
             }
         )}>
-            <p className="overflow-hidden text-ellipsis px-3">{tag.name}</p>
+            <p className="overflow-hidden text-nowrap text-ellipsis px-1">{tag.name}</p>
         </div>
     )
 }

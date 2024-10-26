@@ -1,4 +1,4 @@
-import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0"
+import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 import TaskManager from "@/app/components/task-manager/TaskManager"
 import { getTabs } from "@/app/actions/tabActions"
 import { getTasks } from "@/app/actions/taskActions"
@@ -10,14 +10,16 @@ import Tester from "@/app/components/Test"
 
 export default withPageAuthRequired(async function Dashboard() {
 
+    console.log("rerendered")
+
     const tabs = await getTabs()
     const tasks = await getTasks()
     const tags = await getTags()
 
     return (
             <div className="w-screen h-screen border flex flex-col justify-end items-center">
-                <Button content="logout" style="outline" size="md" href="/api/auth/logout" />
-                <Tester/>
+                {/* <Button content="logout" style="outline" size="md" href="/api/auth/logout" />
+                <Tester/> */}
                 <TaskManager tabList={tabs} taskList={tasks} tagList={tags}/>
                 
             </div>

@@ -1,6 +1,6 @@
 import { z, ZodType } from 'zod'
 
-export type Color = "red" | "blue"
+export type Color = "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose" | "none"
 
 export interface Tab {
     id: number,
@@ -39,4 +39,20 @@ export const TaskSchema: ZodType<TaskFormData> = z
         description: z.string(),
         deadline: z.string().min(1, {message: "Deadline date is invalid"}),
         tags: z.array(z.number().positive())
+    })
+
+export type TagFormData = {
+    id?: number,
+    name: string,
+    color: Color
+}
+
+export const TagSchema: ZodType<TagFormData> = z.
+    object({
+        id: z.union([z.number(), z.undefined()]),
+        name: z.string().min(1, {message: "Tag name is required"}),
+        color: z.enum(
+            ["fuchsia", "pink", "rose", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple"],
+            {message: "Choose a color"}
+        )
     })
