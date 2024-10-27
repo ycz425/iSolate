@@ -3,6 +3,7 @@ import { Task as TaskInterface } from "@/app/types"
 import { BackgroundColors } from "@/app/color"
 import clsx from "clsx"
 import { useState } from "react"
+import MiniTag from "./MiniTag"
 
 interface TaskProps {
     task: TaskInterface
@@ -36,7 +37,7 @@ export default function Task({ task, onClick, sync }: TaskProps) {
                     <div className={clsx("h-2/3 w-2/3 rounded-full", {"bg-neutral-300": checkboxHover && show, "bg-black": !show})}></div>
                 </div>
             </div>
-            <div className="flex flex-col w-4/5">
+            <div className="flex flex-col w-full max-w-4/5">
                 <p className="text-xl" spellCheck={false}>{task.name}</p>
                 <div className="flex flex-row gap-8">
                     {task.tabs ? <p className="text-sm text-neutral-500">{task.tabs.name}</p> : null}
@@ -45,8 +46,8 @@ export default function Task({ task, onClick, sync }: TaskProps) {
                     </p>
                 </div>
             </div>
-            <div className="flex flex-col h-full gap-1">
-                {task.tags.map((tag, index)=> <div key={index} className={"rounded-full w-3 h-3 " + (BackgroundColors[tag.color] || "border border-black")}></div>)}
+            <div className={clsx("flex flex-col w-fit items-start flex-wrap-reverse h-full transition-all duration-500", {"gap-0": !show, "gap-2": show})}>
+                {task.tags.map((tag) => <MiniTag key={tag.id} tag={tag} show={show}/>)}
             </div>
         </div>
     )

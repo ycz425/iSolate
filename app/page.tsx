@@ -19,7 +19,6 @@ export default function Home() {
               <Button content="Log in" style="outline" size="lg" href="/api/auth/login"/>
           </div>
       </div>
-      <Tester/>
     </>
   );
 }
