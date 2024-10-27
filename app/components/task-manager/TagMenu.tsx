@@ -24,7 +24,7 @@ export default function TagMenu({ selectedTags, tagList, onTagClick, onEditClick
                     onMouseLeave={() => {setHoveredTagId(null)}}
                 >
                     {hoveredTagId == tag.id &&
-                        <div className="w-7 h-7 flex justify-center items-center rounded-full hover:bg-neutral-100 hover:cursor-pointer transition-all" onClick={() => {onEditClick(tag)}}>
+                        <div className="w-7 h-7 flex justify-center items-center rounded-full hover:bg-neutral-100 hover:cursor-pointer select-none transition-all" onClick={() => {onEditClick(tag)}}>
                             <Image
                                 src="/images/edit.svg"
                                 alt={`edit ${tag.name} tag`}

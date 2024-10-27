@@ -51,6 +51,11 @@ export default function TaskModal({ task, defaultTags, tabList, tagList, onClose
         setValue("name", target.innerText)
     }
 
+    const onNameBlur = (event: React.FormEvent<HTMLDivElement>) => {
+        const target = event.target as HTMLDivElement
+        target.innerHTML = target.innerHTML.replace(/&nbsp;/g, ' ').trim()
+    }
+
     const onDescriptionInput = (event: React.FormEvent<HTMLDivElement>) => {
         const target = event.target as HTMLDivElement
         setValue("description", target.innerText)
@@ -121,6 +126,8 @@ export default function TaskModal({ task, defaultTags, tabList, tagList, onClose
                         suppressContentEditableWarning
                         onKeyDown={onKeyDown}
                         onInput={onNameInput}
+                        onBlur={onNameBlur}
+                        spellCheck={false}
                     >
                         {task.name} 
                     </div>

@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getSession } from "@auth0/nextjs-auth0";
 import { TagFormData } from "../types";
 
+
 export async function getTags() {
     const supabase = createClient()
     const session = await getSession()
@@ -11,13 +12,14 @@ export async function getTags() {
     if (!session)
         throw new Error("User is not authenticated")
 
-    const { data, error } = await supabase.from("tags").select("id, name, color").eq("user_id", session.user.sub)
+    const { data, error } = await supabase.from("tags").select("id, name, color").eq("user_id", session.user.sub).order("created_at")
 
     if (error)
         throw new Error(`Supabase error: ${error.message}`)
 
     return data
 }
+
 
 export async function upsertTag({id, name, color}: TagFormData) {
     const supabase = createClient()
@@ -31,6 +33,7 @@ export async function upsertTag({id, name, color}: TagFormData) {
     if (error)
         throw new Error(`Supabase error: ${error.message}`)
 }
+
 
 export async function deleteTag(id: number) {
     const supabase = createClient()

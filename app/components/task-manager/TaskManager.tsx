@@ -11,6 +11,7 @@ import TaskModal from "./TaskModal"
 import TagPopup from "./TagPopup"
 import { getTags } from "@/app/actions/tagActions"
 import clsx from "clsx"
+import { deleteTab, getTabs, upsertTab } from "@/app/actions/tabActions"
 
 interface TaskManagerProps {
     tabList: TabInterface[],
@@ -29,11 +30,11 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     const [modalTask, setModalTask] = useState<TaskInterface | null>(null)
     const [popupTag, setPopupTag] = useState<TagInterface | null>(null)
 
-    const [showAddTask, setShowAddTask] = useState(false)
-    const [showAddTab, setShowAddTab] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [triggerEffect, setTriggerEffect] = useState(false)
 
     const tagPopupRef = useRef<HTMLFormElement>(null)
-    const openTagPopupRef = useRef<HTMLButtonElement>(null)
+    const tabBarRef = useRef<HTMLDivElement>(null)
 
     const onAddTask = () => {
         const date = new Date()
@@ -51,12 +52,43 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
         setTasks(tasks)
     }
 
+    const syncTaskTabs = async () => {
+        const tabs = await getTabs()
+        const tasks = await getTasks()
+        setTabs(tabs)
+        setTasks(tasks)
+    }
+
     const onTagSelect = (tagId: number) => {
         if (selectedTags.includes(tagId))
             setSelectedTags(selectedTags.filter(selectedTag => selectedTag != tagId))
         else
             setSelectedTags(selectedTags.concat(tagId))
     }
+
+    const onAddNewTab = async () => {
+        setLoading(true)
+        const data = await upsertTab({name: "New Tab"})
+        setTabs(await getTabs())
+        setSelectedTab(data[0])
+        setTriggerEffect(!triggerEffect)
+        setLoading(false)
+    }
+
+    const onDeleteTab = async (tab: TabInterface) => {
+        setLoading(true)
+        await deleteTab(tab.id)
+        await syncTaskTabs()
+        setSelectedTab(null)
+        if (tabBarRef.current)
+            tabBarRef.current.scrollLeft = 0
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        if (tabBarRef.current)
+            tabBarRef.current.scrollLeft = tabBarRef.current.scrollWidth
+    }, [triggerEffect])
 
     useEffect(() => {
         const handleMouseDown = (event: MouseEvent) => {
@@ -81,47 +113,60 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     )
 
     return (
-        <div className="w-[800px] flex flex-col">
-            <div className="w-full h-fit flex overflow-x-scroll no-scrollbar">
-                <Tab name="Upcoming" selected={selectedTab == null} onClick={()=>{setSelectedTab(null)}}/>
-                {tabs.map((tab) => <Tab key={tab.id} name={tab.name} selected={selectedTab?.id == tab.id} onClick={()=>{setSelectedTab(tab)}}/>)}
+        <div className="w-[800px] flex flex-col relative">
+            <div ref={tabBarRef} className="w-full h-fit flex overflow-x-scroll no-scrollbar transition-all">
+                <Tab tab={{id: -1, name: "Upcoming"}} selected={selectedTab == null} onClick={()=>{setSelectedTab(null)}}/>
+                {
+                    tabs.map((tab) => <Tab
+                        key={tab.id}
+                        tab={tab}
+                        selected={selectedTab?.id == tab.id}
+                        editable
+                        onClick={() => {setSelectedTab(tab)}}
+                        onDelete={() => {onDeleteTab(tab)}}
+                        sync={syncTaskTabs}/>)
+                }
+                <div className="border-b-[1.5px] border-neutral-300 flex-grow"></div>
             </div>
             <div className="flex flex-row-reverse h-96">
                 <div className="flex flex-col h-full w-full py-7 pl-10 pr-5 gap-5 items-center overflow-y-scroll no-scrollbar">
                     {filteredTasks.length == 0 &&
-                        <h1 className="text-neutral-500">Click the "＋ Add" button to start adding tasks.</h1>
+                        <h1 className="text-neutral-500">Press "+ Add new task" to start adding tasks.</h1>
                     }
                     {filteredTasks.map((task) => <Task key={task.id} task={task} onClick={() => {setModalTask(task)}} sync={syncTasks}/>)}
                 </div>
-                <div className="w-44 h-full my-5 border-r border-neutral-300 flex flex-col items-end py-3 gap-4 relative">
+                <div className="w-44 h-full my-5 border-r border-neutral-300 flex flex-col items-end py-3 gap-4">
                     <div className="flex flex-col w-full items-start border-b border-neutral-300">
                         <button
-                            className="p-3 w-full text-start text-neutral-500 border-t text-sm hover:bg-neutral-100 transition-all">
+                            className="p-3 w-full text-start text-neutral-500 border-t border-neutral-300 text-sm hover:bg-neutral-100 transition-all"
+                            onClick={onAddNewTab}
+                        >
                             ＋ Add new tab
                         </button>
                         <button 
-                            className="p-3 w-full text-start text-neutral-500 border-t text-sm hover:bg-neutral-100 transition-all"
+                            className="p-3 w-full text-start text-neutral-500 border-t border-neutral-300 text-sm hover:bg-neutral-100 transition-all"
                             onClick={onAddTask}
                         >
                                 ＋ Add new task
                         </button>
                         <button
-                            className="p-3 w-full text-start text-neutral-500 border-t text-sm hover:bg-neutral-100 transition-all"
+                            className="p-3 w-full text-start text-neutral-500 border-t border-neutral-300 text-sm hover:bg-neutral-100 transition-all"
                             onClick={() => {setPopupTag({id: -1, name: "New Tag", color: "none"})}}
-                            ref={openTagPopupRef}
                         >
                             ＋ Add new tag
                         </button>
                     </div>
-                    <TagMenu selectedTags={selectedTags} tagList={tags} onTagClick={onTagSelect} onEditClick={(tag) => setPopupTag(tag)}/>
-                    {popupTag &&
-                        <TagPopup
-                            ref={tagPopupRef}
-                            tag={popupTag}
-                            onClose={() => {setPopupTag(null)}}
-                            removeSelection={(id) => {setSelectedTags(selectedTags.filter(tagId => tagId != id))}}
-                            sync={syncTaskTags}
-                        />}
+                    <div className="w-full relative">
+                        <TagMenu selectedTags={selectedTags} tagList={tags} onTagClick={onTagSelect} onEditClick={(tag) => setPopupTag(tag)}/>
+                        {popupTag &&
+                            <TagPopup
+                                ref={tagPopupRef}
+                                tag={popupTag}
+                                onClose={() => {setPopupTag(null)}}
+                                removeSelection={(id) => {setSelectedTags(selectedTags.filter(tagId => tagId != id))}}
+                                sync={syncTaskTags}
+                            />}
+                    </div>
                 </div>
             </div>
             {modalTask && 
@@ -134,6 +179,7 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
                     sync={syncTasks}
                 />
             }
+            {loading && <div className="w-full h-full bg-white absolute opacity-50"></div>}
         </div>
     )
 }

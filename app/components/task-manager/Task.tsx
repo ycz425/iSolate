@@ -37,7 +37,7 @@ export default function Task({ task, onClick, sync }: TaskProps) {
                 </div>
             </div>
             <div className="flex flex-col w-4/5">
-                <p className="text-xl">{task.name}</p>
+                <p className="text-xl" spellCheck={false}>{task.name}</p>
                 <div className="flex flex-row gap-8">
                     {task.tabs ? <p className="text-sm text-neutral-500">{task.tabs.name}</p> : null}
                     <p className="text-sm text-neutral-500">

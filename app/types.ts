@@ -56,3 +56,8 @@ export const TagSchema: ZodType<TagFormData> = z.
             {message: "Choose a color"}
         )
     })
+
+export type TabFormData = {
+    id?: number,
+    name: string
+}

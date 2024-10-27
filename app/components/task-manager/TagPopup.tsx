@@ -41,6 +41,11 @@ export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProp
         setValue("name", target.innerHTML)
     }
 
+    const onNameBlur = (event: React.FormEvent<HTMLDivElement>) => {
+        const target = event.target as HTMLDivElement
+        target.innerHTML = target.innerHTML.replace(/&nbsp;/g, ' ').trim()
+    }
+
     const onSave = async (data: TagFormData) => {
         setPending(true)
         await upsertTag(data)
@@ -66,6 +71,8 @@ export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProp
                 suppressContentEditableWarning
                 onKeyDown={onKeyDown}
                 onInput={onNameInput}
+                onBlur={onNameBlur}
+                spellCheck={false}
             >
                 {tag.name}
             </div>
@@ -84,8 +91,8 @@ export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProp
             </div>
             {errors.color && <p className="text-red-500 text-xs -my-3">{errors.color.message}</p>}
             <div className={"flex justify-end gap-2"}>
-                <Button content={tag.id == -1 ? "add" : "save"} style="colored" size="sm" type="submit"/>
-                {tag.id != -1 && <Button content="delete" style="colored" color="red" size="sm" type="button" onClick={() => {onDelete(tag.id)}}/>}
+                <Button content={tag.id == -1 ? "Add" : "Save"} style="colored" size="sm" type="submit"/>
+                {tag.id != -1 && <Button content="Delete" style="colored" color="red" size="sm" type="button" onClick={() => {onDelete(tag.id)}}/>}
             </div>
             {pending && <div className="absolute bg-white opacity-50 w-full h-full top-0 left-0 rounded-xl "></div>}
         </form>
