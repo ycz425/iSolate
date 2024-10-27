@@ -4,9 +4,9 @@ import { getTabs } from "@/app/actions/tabActions"
 import { getTasks } from "@/app/actions/taskActions"
 import { getTags } from "@/app/actions/tagActions"
 
-import Button from "@/app/components/Button"
-import Tester from "@/app/components/Test"
+
 import Image from "next/image"
+import Quote from "../components/Quote"
 
 
 export default withPageAuthRequired(async function Dashboard() {
@@ -16,13 +16,14 @@ export default withPageAuthRequired(async function Dashboard() {
     const tags = await getTags()
 
     return (
-            <div className="w-screen h-screen border flex flex-col gap-14 justify-end items-center">
+            <div className="w-screen h-screen relative">
+                <Quote/>
                 <Image
                     src="./icon.svg"
                     alt="toggle isolation mode"
                     width={100}
                     height={100}
-                    className="select-none"
+                    className="select-none absolute left-1/2 -translate-x-1/2 top-1/4"
                 />
                 {/* <Button content="logout" style="outline" size="md" href="/api/auth/logout" />
                 <Tester/> */}

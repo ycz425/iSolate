@@ -113,7 +113,7 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
     )
 
     return (
-        <div className="w-[800px] flex flex-col relative">
+        <div className="w-[800px] flex flex-col left-1/2 -translate-x-1/2 bottom-0 absolute">
             <div ref={tabBarRef} className="w-full h-fit flex overflow-x-scroll no-scrollbar transition-all">
                 <Tab tab={{id: -1, name: "Upcoming"}} selected={selectedTab == null} onClick={()=>{setSelectedTab(null)}}/>
                 {
