@@ -15,14 +15,14 @@ interface DashboardContentProps {
 
 export default function DashboardContent({ tabs, tasks, tags}: DashboardContentProps) {
 
-    const { darkMode, setDarkMode } = useDarkModeContext()
+    const { darkMode, toggleDarkMode } = useDarkModeContext()
 
     return (
         <div className={clsx("w-screen h-screen relative", {"bg-white": !darkMode, "bg-black": darkMode})}>
             <Quote/>
             <div
                 className="w-[100px] h-[100px] absolute left-1/2 rounded-2xl -translate-x-1/2 top-1/4 flex justify-center items-center group hover:cursor-pointer"
-                onClick={() => {setDarkMode(!darkMode)}}
+                onClick={() => {toggleDarkMode()}}
             >
                 <Image
                     src="./icon.svg"
