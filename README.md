@@ -28,4 +28,5 @@ You can try out the deployed version of iSolate at: [isolate-app.vercel.app](htt
 ## Future Improvements
 - Website blocking feature
 - Automatic assignment of recurring tasks
+- Task archive view
 - Progress tracker and user analytics
