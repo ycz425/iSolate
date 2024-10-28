@@ -1,6 +1,6 @@
 "use client"
 
-import { Tab as TabInterface, Task as TaskInterface, Tag as TagInterface } from "../../types"
+import { Tab as TabInterface, Task as TaskInterface, Tag as TagInterface } from "../../../types"
 import { useEffect, useState, useRef } from "react"
 import Tab from "./Tab"
 import Task from "./Task"

@@ -1,12 +1,12 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import TaskManager from "@/app/components/task-manager/TaskManager"
+import DarkModeContextProvider from "../components/dashboard/DarkModeContextProvider"
 import { getTabs } from "@/app/actions/tabActions"
 import { getTasks } from "@/app/actions/taskActions"
 import { getTags } from "@/app/actions/tagActions"
+import DashboardContent from "../components/dashboard/DashboardContent"
 
 
-import Image from "next/image"
-import Quote from "../components/Quote"
+
 
 
 export default withPageAuthRequired(async function Dashboard() {
@@ -16,19 +16,8 @@ export default withPageAuthRequired(async function Dashboard() {
     const tags = await getTags()
 
     return (
-            <div className="w-screen h-screen relative">
-                <Quote/>
-                <Image
-                    src="./icon.svg"
-                    alt="toggle isolation mode"
-                    width={100}
-                    height={100}
-                    className="select-none absolute left-1/2 -translate-x-1/2 top-1/4"
-                />
-                {/* <Button content="logout" style="outline" size="md" href="/api/auth/logout" />
-                <Tester/> */}
-                <TaskManager tabList={tabs} taskList={tasks} tagList={tags}/>
-                
-            </div>
+        <DarkModeContextProvider>
+            <DashboardContent tabs={tabs} tasks={tasks} tags={tags}/>
+        </DarkModeContextProvider>
     )
 }, { returnTo: "/dashboard" })
