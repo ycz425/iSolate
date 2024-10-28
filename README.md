@@ -21,7 +21,7 @@ iSolate is a productivity tool designed to immerse users in a distraction-free e
 - **Deployment**: Vercel 
 
 ## Live Demo
-You can try out the deployed version of iSolate at: [isolate-app.vercel.app](isolate-app.vercel.app)
+You can try out the deployed version of iSolate at: [isolate-app.vercel.app](https://isolate-app.vercel.app)
 
 **Note**: This project is currently set up for demonstration purposes only. Local installation instructions are not provided. Please feel free to explore the live demo!
 
