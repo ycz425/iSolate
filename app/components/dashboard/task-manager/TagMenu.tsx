@@ -1,7 +1,6 @@
 import { Tag as TagInterface } from "@/app/types"
 import Tag from "./Tag"
 import { useState } from "react"
-import clsx from "clsx"
 import Image from "next/image"
 
 interface TagMenuProps {

@@ -14,7 +14,7 @@ interface TagPopupProps {
     sync: () => void
 }
 
-export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProps, ref: ForwardedRef<HTMLFormElement>) => {
+const TagPopUp = forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProps, ref: ForwardedRef<HTMLFormElement>) => {
     const colors: Color[] = ["fuchsia", "pink", "rose", "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple"]
     const [pending, setPending] = useState(false)
 
@@ -26,7 +26,7 @@ export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProp
         } as TagFormData,
         resolver: zodResolver(TagSchema)
     })
-    const watch = useWatch({control: control, name: "color"})
+    useWatch({control: control, name: "color"})
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key == "Enter") {
@@ -98,3 +98,5 @@ export default forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupProp
         </form>
     )
 })
+
+export default TagPopUp

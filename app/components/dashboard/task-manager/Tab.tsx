@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Tab as TabInterface } from "@/app/types"
-import { deleteTab, upsertTab } from "@/app/actions/tabActions"
+import { upsertTab } from "@/app/actions/tabActions"
 
 interface TabProps {
     tab: TabInterface,

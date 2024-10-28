@@ -10,7 +10,6 @@ import TagMenu from "./TagMenu"
 import TaskModal from "./TaskModal"
 import TagPopup from "./TagPopup"
 import { getTags } from "@/app/actions/tagActions"
-import clsx from "clsx"
 import { deleteTab, getTabs, upsertTab } from "@/app/actions/tabActions"
 
 interface TaskManagerProps {
@@ -131,7 +130,7 @@ export default function TaskManager({ tabList, taskList, tagList }: TaskManagerP
             <div className="flex flex-row-reverse h-96">
                 <div className="flex flex-col h-full w-full py-7 pl-10 pr-5 gap-5 items-center overflow-y-scroll no-scrollbar">
                     {filteredTasks.length == 0 &&
-                        <h1 className="text-neutral-500">Press "+ Add new task" to start adding tasks.</h1>
+                        <h1 className="text-neutral-500">Press &quot;+ Add new task&quot; to start adding tasks.</h1>
                     }
                     {filteredTasks.map((task) => <Task key={task.id} task={task} onClick={() => {setModalTask(task)}} sync={syncTasks}/>)}
                 </div>

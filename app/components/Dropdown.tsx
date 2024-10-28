@@ -2,7 +2,7 @@ interface DropdownProps {
     labelledBy: string,
     options: { name: string, value?: number}[],
     defaultValue?: number
-    onChange: (value: any) => void
+    onChange: (value: string) => void
 }
 
 export default function Dropdown({ labelledBy, options, defaultValue, onChange }: DropdownProps) {

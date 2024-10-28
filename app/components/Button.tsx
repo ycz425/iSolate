@@ -1,7 +1,6 @@
 "use client";
 
 import clsx from "clsx"
-import { useRouter } from "next/navigation"
 import { Color } from "../types";
 import { TextColors, BorderColors, BackgroundColors} from "../color";
 
@@ -16,8 +15,6 @@ interface ButtonProps {
 }
 
 export default function Button({ type, content, color, style, size, href, onClick }: ButtonProps) {
-    const router = useRouter()
-
     return (
         href ? <a className={clsx("flex rounded-xl items-center justify-center hover:cursor-pointer", {
             "bg-transparent text-black border border-black": !color && style == "outline",

@@ -37,10 +37,10 @@ export default function TaskModal({ task, defaultTags, tabList, tagList, onClose
         } as TaskFormData,
         resolver: zodResolver(TaskSchema)
     })
-    const watch = useWatch({control: control, name: "tags"})
+    useWatch({control: control, name: "tags"})
     
-    const onTabChange = (value: number) => {
-        if (value == -1)
+    const onTabChange = (value: string) => {
+        if (Number(value) == -1)
             setValue("tab", null)
         else
             setValue("tab", Number(value))
