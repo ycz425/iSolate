@@ -99,4 +99,5 @@ const TagPopUp = forwardRef(({ tag, onClose, removeSelection, sync }: TagPopupPr
     )
 })
 
+TagPopUp.displayName = "TagPopUp"
 export default TagPopUp

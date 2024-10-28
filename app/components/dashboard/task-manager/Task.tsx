@@ -1,6 +1,5 @@
 import { setComplete } from "@/app/actions/taskActions"
 import { Task as TaskInterface } from "@/app/types" 
-import { BackgroundColors } from "@/app/color"
 import clsx from "clsx"
 import { useState } from "react"
 import MiniTag from "./MiniTag"

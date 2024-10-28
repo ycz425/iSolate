@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react"
 
-const DarkModeContext = createContext<Object>({ darkMode: false, setDarkMode: () => {} })
+const DarkModeContext = createContext<object>({ darkMode: false, setDarkMode: () => {} })
 
 export const useDarkModeContext = () => {
     return useContext(DarkModeContext)
