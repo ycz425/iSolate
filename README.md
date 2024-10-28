@@ -1,6 +1,6 @@
 # iSolate
 ### Description
-iSolate is a productivity tool designed to immerse users in a distraction-free environment. It features a minimalistic yet robust task management interface and a website-blocking functionality (🚧 under construction 🚧). As my first full-stack project, developing iSolate has been a significant learning experience for me, allowing me to exercise my creativity and enhance my problem-solving skills.
+iSolate is a productivity web application designed to immerse users in a distraction-free environment. It features a minimalistic yet robust task management interface and a website-blocking functionality (🚧 under construction 🚧). As my first full-stack project, developing iSolate has been a significant learning experience for me, allowing me to exercise my creativity and enhance my problem-solving skills.
 
 ### Learning Objectives
 - Gain a comprehensive understanding of full-stack development process.
