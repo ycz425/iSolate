@@ -1,10 +1,15 @@
 "use client"
 
-import { createContext, useState } from "react"
+import { createContext, useContext, useState } from "react"
+
+const DarkModeContext = createContext({ darkMode: false, setDarkMode: (darkMode: boolean) => {} })
+
+export const useDarkModeContext = () => {
+    return useContext(DarkModeContext)
+}
 
 export default function DarkModeContextProvider({ children }: Readonly<{children: React.ReactNode}>) {
     const [darkMode, setDarkMode] = useState(false)
-    const DarkModeContext = createContext({ darkMode, setDarkMode })
 
     return (
         <DarkModeContext.Provider value={{ darkMode, setDarkMode }}>

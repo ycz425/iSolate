@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import { Task, Tab, Tag as TagInterface, TaskFormData, TaskSchema } from "@/app/types";
 import { useState, useEffect, useRef } from 'react'
 import Button from "../../Button"
-import Dropdown from "./Dropdown"
+import Dropdown from "../../Dropdown"
 import Tag from "./Tag";
 import Image from "next/image";
 import { upsertTask, deleteTask } from "@/app/actions/taskActions";
