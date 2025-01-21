@@ -21,7 +21,7 @@ iSolate is a productivity web application designed to immerse users in a distrac
 - **Deployment**: Vercel 
 
 ## Live Demo
-You can try out the deployed version of iSolate at: [isolate-app.vercel.app](https://isolate-app.vercel.app)
+The live demo of iSolate is currently in hibernation due to the limitations of the free tier of Supabase. I am actively exploring options to upgrade our infrastructure and ensure a more reliable and seamless experience for users in the near future.
 
 **Note**: This project is currently set up for demonstration purposes only. Local installation instructions are not provided. Please feel free to explore the live demo!
 
